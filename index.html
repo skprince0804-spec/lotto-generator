@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>무료 로또번호 생성기</title>
+</head>
+<body>
+
+<!--<div id="lotto-app">
+  <style>
+    #lotto-app {
+      max-width: 520px;
+      margin: 25px auto;
+      padding: 18px;
+      border: 1px solid #cce5d5;
+      border-radius: 18px;
+      background: #ffffff;
+      font-family: Arial, sans-serif;
+      color: #222;
+      box-sizing: border-box;
+    }
+    #lotto-app * { box-sizing: border-box; }
+    #lotto-app .lotto-head {
+      background: #075c3c;
+      color: white;
+      padding: 22px 12px;
+      border-radius: 13px;
+      text-align: center;
+    }
+    #lotto-app h2 { margin: 0 0 8px; font-size: 23px; }
+    #lotto-app p { line-height: 1.6; }
+    #lotto-app .choices {
+      display: flex;
+      gap: 7px;
+      margin: 18px 0;
+    }
+    #lotto-app button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 8px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    #lotto-app .choice {
+      flex: 1;
+      background: #edf2ef;
+      color: #333;
+    }
+    #lotto-app .choice.active {
+      background: #07834f;
+      color: white;
+    }
+    #lotto-app .result {
+      background: #f3f8f5;
+      border-radius: 12px;
+      padding: 13px;
+      margin: 12px 0;
+    }
+    #lotto-app .balls {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+      margin-top: 12px;
+    }
+    #lotto-app .ball {
+      width: 40px;
+      height: 40px;
+      min-width: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 15px;
+    }
+    #lotto-app .generate {
+      width: 100%;
+      background: #07834f;
+      color: white;
+      font-size: 18px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+    #lotto-app .copy {
+      width: 100%;
+      background: #e9f2ed;
+      color: #075c3c;
+      margin-top: 9px;
+    }
+    #lotto-app .notice {
+      font-size: 12px;
+      color: #777;
+      text-align: center;
+      margin-top: 15px;
+    }
+    @media(max-width:380px) {
+      #lotto-app { padding: 10px; }
+      #lotto-app .ball { width: 34px; height: 34px; font-size: 13px; }
+      #lotto-app .choices { gap: 4px; }
+      #lotto-app .choice { font-size: 13px; padding: 10px 3px; }
+    }
+  </style>
+
+  <div class="lotto-head">
+    <h2>🍀 행운의 로또 생성기</h2>
+    <div>LOTTO 6/45</div>
+    <p>나만의 행운 번호를 만들어 보세요!</p>
+  </div>
+
+  <p><b>① 생성할 게임 수를 선택하세요.</b></p>
+
+  <div class="choices">
+    <button class="choice active" data-count="1">1게임</button>
+    <button class="choice" data-count="3">3게임</button>
+    <button class="choice" data-count="5">5게임</button>
+    <button class="choice" data-count="10">10게임</button>
+  </div>
+
+  <p><b>② 생성된 로또 번호</b></p>
+  <div id="lotto-results" aria-live="polite">
+    <div class="result" style="text-align:center">
+      🍀 아래 생성 버튼을 눌러보세요!
+    </div>
+  </div>
+
+  <button class="generate" id="lotto-generate">
+    ✨ 로또 번호 무료 생성하기
+  </button>
+
+  <button class="copy" id="lotto-copy">
+    📋 번호 복사하기
+  </button>
+
+  <div class="notice">
+    ※ 무작위 번호 생성기이며 당첨을 보장하지 않습니다.
+  </div>
+
+  <script>
+  (function(){
+    const app = document.getElementById('lotto-app');
+    if (!app || app.dataset.ready) return;
+    app.dataset.ready = 'yes';
+
+    let count = 1;
+    let generated = [];
+
+    const choices = app.querySelectorAll('.choice');
+    const results = app.querySelector('#lotto-results');
+
+    choices.forEach(btn => {
+      btn.addEventListener('click', function(){
+        count = Number(this.dataset.count);
+        choices.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    function makeNumbers(){
+      generated = [];
+
+      for(let i=0; i<count; i++){
+        const pool = Array.from({length:45},(_,i)=>i+1);
+
+        for(let j=44; j>0; j--){
+          const k = Math.floor(Math.random()*(j+1));
+          [pool[j],pool[k]] = [pool[k],pool[j]];
+        }
+
+        generated.push(pool.slice(0,6).sort((a,b)=>a-b));
+      }
+
+      results.innerHTML = '';
+
+      generated.forEach((nums,index)=>{
+        const card = document.createElement('div');
+        card.className = 'result';
+
+        const heading = document.createElement('b');
+        heading.textContent = (index+1)+'게임';
+        card.appendChild(heading);
+
+        const balls = document.createElement('div');
+        balls.className = 'balls';
+
+        nums.forEach(n=>{
+          const ball = document.createElement('div');
+          ball.className = 'ball';
+          ball.textContent = n;
+
+          let color;
+          if(n<=10) color='#f3bd32';
+          else if(n<=20) color='#428bd5';
+          else if(n<=30) color='#e85d61';
+          else if(n<=40) color='#999999';
+          else color='#36a66b';
+
+          ball.style.background = color;
+          balls.appendChild(ball);
+        });
+
+        card.appendChild(balls);
+        results.appendChild(card);
+      });
+    }
+
+    app.querySelector('#lotto-generate')
+      .addEventListener('click',makeNumbers);
+
+    app.querySelector('#lotto-copy')
+      .addEventListener('click',async function(){
+        if(!generated.length){
+          alert('먼저 로또 번호를 생성해 주세요.');
+          return;
+        }
+
+        const text = generated.map((nums,i)=>
+          (i+1)+'게임: '+nums.join(', ')
+        ).join('\n');
+
+        try {
+          await navigator.clipboard.writeText(text);
+          alert('로또 번호가 복사되었습니다!');
+        } catch(e) {
+          const area = document.createElement('textarea');
+          area.value = text;
+          app.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+          alert('로또 번호 복사를 시도했습니다.');
+        }
+      });
+  })();
+  </script>
+</div>-->
+
+</body>
+</html>
